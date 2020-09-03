@@ -1,0 +1,27 @@
+{
+    "name": "zelframework/form",
+    "version": "v0.1.0",
+    "description": "Form builder",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Brtizell",
+            "email": "britzel99@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "ZelFramework\\Form\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ZelFramework\\Form\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.3"
+    }
+}
