@@ -4,7 +4,7 @@
 namespace ZelFramework\Form\Type;
 
 
-class EmailType
+class TextType implements TypeInterface
 {
 	
 	/**
@@ -12,7 +12,7 @@ class EmailType
 	 */
 	public function getType(): string
 	{
-		return 'email';
+		return 'text';
 	}
 	
 	/**
@@ -20,7 +20,7 @@ class EmailType
 	 */
 	public function getParent(): ?string
 	{
-		return TextType::class;
+		return null;
 	}
 	
 	/**

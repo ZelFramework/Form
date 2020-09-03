@@ -14,6 +14,24 @@ class FormBuilderTests extends TestCase
 {
 	
 	// php vendor/phpunit/phpunit/phpunit tests/FormBuilderTests.php
+	public static function getEntity()
+	{
+		$entity = new EntityTests();
+		$entity->setEmail('test@test.com');
+		$entity->setPassword('pass');
+		return $entity;
+	}
+	
+	public function testTheme()
+	{
+		$formBuilder = new FormBuilder();
+		$this->assertEquals($formBuilder->getTheme(), null);
+		$formBuilder = new FormBuilder([], ['theme' => null]);
+		$this->assertEquals($formBuilder->getTheme(), null);
+		$formBuilder = new FormBuilder([], ['theme' => 1]);
+		$this->assertEquals($formBuilder->getTheme(), 1);
+	}
+	
 	public function testGetForm()
 	{
 		$formBuilder = new FormBuilder();
@@ -22,29 +40,64 @@ class FormBuilderTests extends TestCase
 			->add('password', PasswordType::class, ['value' => 'pass'])
 			->getForm();
 		
+		$form = $form->createView();
+		
 		$this->assertEquals($form['email']['_type'], EmailType::class);
 		$this->assertEquals($form['email']['_options']['value'], 'test@test.com');
 		$this->assertEquals($form['password']['_type'], PasswordType::class);
-		$this->assertEquals($form['password']['_options']['value'], 'pass');
+		$this->assertArrayNotHasKey('value', $form['password']['_options']);
 	}
 	
 	public function testGetFormWithEntity()
 	{
-		$entity = new EntityTests();
-		$entity->setEmail('test@test.com');
-		$entity->setPassword('pass');
+		$formBuilder = new FormBuilder(self::getEntity());
+		$form = $formBuilder
+			->add('email', EmailType::class)
+			->add('password', PasswordType::class)
+			->getForm();
+		
+		$form = $form->createView();
+		
+		$this->assertEquals($form['email']['_type'], EmailType::class);
+		$this->assertEquals($form['email']['_options']['value'], 'test@test.com');
+		$this->assertEquals($form['password']['_type'], PasswordType::class);
+		$this->assertArrayNotHasKey('value', $form['password']['_options']);
+	}
+	
+	public function testRemove()
+	{
+		$formBuilder = new FormBuilder(self::getEntity());
+		$form = $formBuilder
+			->remove('password')
+			->getForm();
+		
+		$form = $form->createView();
+		
+		$this->assertArrayNotHasKey('password', $form);
+	}
+	
+	public function testHandleRequest()
+	{
+		$entity = new Entity\EntityTests();
+		
 		$formBuilder = new FormBuilder($entity);
 		$form = $formBuilder
 			->add('email', EmailType::class)
 			->add('password', PasswordType::class)
 			->getForm();
 		
-		var_dump($form);
+		$form->handleRequest([
+			'email' => 'test@test.com',
+			'password' => 'pass',
+		]);
 		
-		$this->assertEquals($form['email']['_type'], EmailType::class);
+		$this->assertEquals($entity->getEmail(), 'test@test.com');
+		$this->assertEquals($entity->getPassword(), 'pass');
+		
+		$form = $form->createView();
+		
 		$this->assertEquals($form['email']['_options']['value'], 'test@test.com');
-		$this->assertEquals($form['password']['_type'], PasswordType::class);
-		$this->assertEquals($form['password']['_options']['value'], 'pass');
+		$this->assertArrayNotHasKey('value', $form['password']['_options']);
 	}
 	
 }
