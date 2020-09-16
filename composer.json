@@ -3,7 +3,7 @@
     "version": "v0.1.0",
     "description": "Form builder",
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Brtizell",

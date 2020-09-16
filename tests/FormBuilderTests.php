@@ -37,8 +37,7 @@ class FormBuilderTests extends TestCase
 		$formBuilder = new FormBuilder();
 		$form = $formBuilder
 			->add('email', EmailType::class, ['value' => 'test@test.com'])
-			->add('password', PasswordType::class, ['value' => 'pass'])
-			->getForm();
+			->add('password', PasswordType::class, ['value' => 'pass']);
 		
 		$form = $form->createView();
 		
@@ -53,8 +52,7 @@ class FormBuilderTests extends TestCase
 		$formBuilder = new FormBuilder(self::getEntity());
 		$form = $formBuilder
 			->add('email', EmailType::class)
-			->add('password', PasswordType::class)
-			->getForm();
+			->add('password', PasswordType::class);
 		
 		$form = $form->createView();
 		
@@ -68,8 +66,7 @@ class FormBuilderTests extends TestCase
 	{
 		$formBuilder = new FormBuilder(self::getEntity());
 		$form = $formBuilder
-			->remove('password')
-			->getForm();
+			->remove('password');
 		
 		$form = $form->createView();
 		
@@ -83,8 +80,7 @@ class FormBuilderTests extends TestCase
 		$formBuilder = new FormBuilder($entity);
 		$form = $formBuilder
 			->add('email', EmailType::class)
-			->add('password', PasswordType::class)
-			->getForm();
+			->add('password', PasswordType::class);
 		
 		$form->handleRequest([
 			'email' => 'test@test.com',
