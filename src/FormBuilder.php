@@ -6,6 +6,7 @@ namespace ZelFramework\Form;
 
 use ReflectionFunction;
 use SebastianBergmann\Type\ReflectionMapper;
+use ZelFramework\Form\Type\SubmitType;
 use ZelFramework\Form\Type\PasswordType;
 use ZelFramework\Kernel\Configuration;
 
@@ -53,14 +54,14 @@ class FormBuilder
 				} catch (\TypeError $e) {
 					$this->data['id'] = null;
 				}
-			}
-			else if (substr($method, 0, 3) === 'get') {
+			} else if (substr($method, 0, 3) === 'get') {
 				$name = substr($method, 3);
 				$name[0] = strtolower($name[0]);
 				$this->data[$name]['_type'] = null;
 				try {
 					$this->data[$name]['_options']['value'] = $this->entity->$method();
-				} catch (\TypeError $e) {}
+				} catch (\TypeError $e) {
+				}
 			}
 			
 		}
@@ -79,6 +80,19 @@ class FormBuilder
 		else
 			foreach ($options as $key => $value)
 				$this->data[$name]['_options'][$key] = $value;
+		
+		if (!isset($this->data[$name]['_options']['label']))
+			$this->data[$name]['_options']['label'] = $name;
+		
+		$type = $this->data[$name]['_type'];
+		$type = new $type();
+		$this->data[$name]['_options']['type'] = $type->getType() ?? 'text';
+		
+		if (!isset($this->data[$name]['_options']['id']))
+			$this->data[$name]['_options']['id'] = $name;
+		
+		if (!isset($this->data[$name]['_options']['name']))
+			$this->data[$name]['_options']['name'] = $name;
 		
 		return $this;
 	}
@@ -99,9 +113,24 @@ class FormBuilder
 	{
 		$data = $this->data;
 		
-		foreach ($data as $name => $value)
+		$haveInput = false;
+		
+		foreach ($data as $name => $value) {
 			if ($value['_type'] === PasswordType::class)
 				unset($data[$name]['_options']['value']);
+			elseif ($value['_type'] === SubmitType::class)
+				$haveInput = true;
+		}
+		
+		if ($haveInput === false) {
+			$data['submit'] = [
+				'_type' => SubmitType::class,
+				'_options' => [
+					'name' => 'submit',
+					'type' => 'submit',
+				],
+			];
+		}
 		
 		return $data;
 	}
@@ -120,6 +149,22 @@ class FormBuilder
 						$this->entity->$method($value);
 			}
 		}
+	}
+	
+	public function isSubmitted(): bool
+	{
+		foreach ($this->data as $data) {
+			if (!isset($_POST[$data]) && $data['_options']['required'] === true)
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public function isValid(): bool
+	{
+		// TODO: Verify if the form is valid
+		return true;
 	}
 	
 }

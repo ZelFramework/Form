@@ -1,13 +1,13 @@
 {# Widget #}
 
 {% block form_widget %}
-    <input type="{{- type -}}" id="{{- id -}}" name="{{- name -}}" {{- disabled -}} {{- required -}}>
+    <input type="{{- form.type -}}" id="{{- form.id -}}" name="{{- form.name -}}" class="{{ form.attr.class }}" {% if form.disabled %}disabled{% endif %} {% if form.required %}required{% endif %}>
 {% endblock %}
 
 {# Row #}
 
 {% block form_row %}
-    <div class="form-group {{ form.row_attr }}">
+    <div class="form-group {{- form.row_attr.class -}}">
         {{- form_label(form) -}}
         {{- form_error(form) -}}
         {{- form_widget(form) -}}
@@ -18,17 +18,29 @@
 {# Label #}
 
 {% block form_label %}
-    <label for="{{- label -}}"></label>
+    <label for="{{- form.label -}}">{{- form.label -}}</label>
 {% endblock %}
 
 {# Error #}
 
 {% block form_error %}
-    <label for="{{- label -}}"></label>
+	{% for error in form.error %}
+        <span>{{- error -}}</span>
+	{% endfor %}
 {% endblock %}
 
 {# Help #}
 
 {% block form_help %}
-    <span>{{- message -}}</span>
+	{% for help in form.help %}
+		<span>{{- help -}}</span>
+	{% endfor %}
+{% endblock %}
+
+{# Submit #}
+
+{% block form_submit %}
+	<div class="{{- form.row_attr.class -}}">
+		<button type="{{- form.type -}}" class="btn btn-primary {{- form.attr.class -}}">{{- form.name -}}</button>
+	</div>
 {% endblock %}
