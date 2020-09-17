@@ -25,14 +25,30 @@ $entity = new EntityTests();
 
 $formBuilder = new FormBuilder($entity);
 $form = $formBuilder
-	->add('email', EmailType::class)
-	->add('password', PasswordType::class)
-	->add('Test', SubmitType::class, [
+	->add('email', EmailType::class, [
+		'label' => 'Email :',
+		'attr' => [
+			'class' => 'email',
+		],
+	])
+	->add('password', PasswordType::class, [
+		'label' => 'Password :',
 		'row_attr' => [
-			'class' => 'ok',
+			'class' => 'password_row',
+		],
+	])
+	->add('Connection', SubmitType::class, [
+		'attr' => [
+			'class' => 'btn-sm btn-secondary',
+		],
+		'row_attr' => [
+			'class' => 'text-center',
 		],
 	]);
 
+if ($form->isSubmitted() && $form->isValid()) {
+	// insert / update entity
+}
 
 echo $twig->render('template.html.twig', ['formTest' => $form->createView()]);
 

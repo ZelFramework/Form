@@ -8,10 +8,10 @@ interface ValidatorInterface
 {
 	
 	/**
-	 * Check if the variable is of the same type as the class used
-	 * @param $var mixed
-	 * @return bool
+	 * Checks if the passed value is valid.
+	 * @param $value mixed
+	 * @return array|null
 	 */
-	public function isValid($var): bool;
+	public function isValid($value): ?array;
 	
 }

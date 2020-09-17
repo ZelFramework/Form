@@ -153,8 +153,8 @@ class FormBuilder
 	
 	public function isSubmitted(): bool
 	{
-		foreach ($this->data as $data) {
-			if (!isset($_POST[$data]) && $data['_options']['required'] === true)
+		foreach ($this->data as $name => $data) {
+			if (!isset($_POST[$name]) && isset($data['_options']['required']) && $data['_options']['required'] === true)
 				return false;
 		}
 		
